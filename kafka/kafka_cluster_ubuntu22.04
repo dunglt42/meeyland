@@ -1,0 +1,150 @@
+###
+apt install openjdk-11-jdk -y
+
+
+### sudo nano  /etc/systemd/system/zookeeper.service
+[Unit]
+Description=Apache Zookeeper server
+Documentation=http://zookeeper.apache.org
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties
+ExecStop=/usr/local/kafka/bin/zookeeper-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
+
+### sudo nano /etc/systemd/system/kafka.service
+[Unit]
+Description=Apache Kafka Server
+Documentation=http://kafka.apache.org/documentation.html
+Requires=zookeeper.service
+
+[Service]
+Type=simple
+Environment="JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" 
+ExecStart=/usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server.properties
+ExecStop=/usr/local/kafka/bin/kafka-server-stop.sh
+
+[Install]
+WantedBy=multi-user.target
+
+mkdir -p /data/kafka-logs
+mkdir -p /data/zookeeper/
+
+###
+systemctl restart zookeeper
+systemctl enable zookeeper
+
+systemctl restart kafka
+systemctl enable kafka
+
+
+### server1
+echo "1" > /data/zookeeper/myid
+
+### server2
+echo "2" > /data/zookeeper/myid
+
+### server3
+echo "3" > /data/zookeeper/myid
+
+
+###
+config/zookeeper.properties
+###
+dataDir=/data/zookeeper
+clientPort=2181
+maxClientCnxns=0
+admin.enableServer=false
+tickTime=2000
+initLimit=10
+syncLimit=5
+server.1=10.100.10.191:2888:3888
+server.2=10.100.10.192:2888:3888
+server.3=10.100.10.194:2888:3888
+
+###
+config/server.properties
+update broker.id=1
+update listeners=PLAINTEXT://10.100.10.191:9092
+###
+broker.id=1
+listeners=PLAINTEXT://10.100.10.191:9092
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+log.dirs=/data/kafka-logs
+num.partitions=1
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+log.retention.hours=168
+log.retention.check.interval.ms=300000
+zookeeper.connect=10.100.10.191:2181,10.100.10.192:2181,10.100.10.194:2181
+zookeeper.connection.timeout.ms=18000
+group.initial.rebalance.delay.ms=0
+delete.topic.enable=true
+
+
+###
+systemctl restart kafka
+
+systemctl enable zookeeper
+systemctl enable kafka
+
+
+#############################################################################################################################################
+command run with kafka
+#############################################################################################################################################
+
+### List topics
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --list
+
+### Describe topic detail
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --describe --topic sampleTopic
+
+### Delete topic
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --delete --topic first_topic
+
+### create topic
+/usr/local/kafka/bin/kafka-topics.sh --create --bootstrap-server 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --replication-factor 3 --partitions 50 --topic demo2
+
+### Send and Receive a Message in Kafka
+/usr/local/kafka/bin/kafka-console-producer.sh --broker-list 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --topic demo2
+/usr/local/kafka/bin/kafka-console-consumer.sh --bootstrap-server 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --topic demo2 --from-beginning
+
+
+
+### This command will give you the list of the active brokers between brackets:
+/usr/local/kafka/bin/zookeeper-shell.sh 10.100.10.191:2181 ls /brokers/ids
+
+$  ls /brokers/ids # Gives the list of active brokers
+$  ls /brokers/topics #Gives the list of topics
+$  get /brokers/ids/0 #Gives more detailed information of the broker id '0'
+
+
+########################################################################
+
+### meeycrm
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server b-1.meeycrmprod.o4x3e2.c5.kafka.ap-southeast-1.amazonaws.com:9092,b-2.meeycrmprod.o4x3e2.c5.kafka.ap-southeast-1.amazonaws.com:9092,b-3.meeycrmprod.o4x3e2.c5.kafka.ap-southeast-1.amazonaws.com:9092 --list
+
+### meeycrm cmc prod
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092 --list
+
+### meeycrm cmc dev, stg
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.180:9092 --list
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.180:9091,10.100.10.180:9092,10.100.10.180:9093 --list
+
+### meeyai
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server b-1.meey-ai.08punr.c3.kafka.ap-southeast-1.amazonaws.com:9092,b-2.meey-ai.08punr.c3.kafka.ap-southeast-1.amazonaws.com:9092 --list
+
+### meeyland
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server b-2.meeyland-prod.giprzm.c3.kafka.ap-southeast-1.amazonaws.com:9092,b-1.meeyland-prod.giprzm.c3.kafka.ap-southeast-1.amazonaws.com:9092,b-3.meeyland-prod.giprzm.c3.kafka.ap-southeast-1.amazonaws.com:9092 --list

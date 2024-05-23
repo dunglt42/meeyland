@@ -1,0 +1,60 @@
+Link về Redis Sentinal: https://viblo.asia/p/redis-sentinel-la-cai-gi-m68Z0eaMlkG
+Link cài đặt master slave sentinel: https://docs.vultr.com/setup-high-availability-redis-using-sentinel-in-ubuntu
+
+
+- master: 10.100.10.72
+- replica-1: 10.100.10.73
+- replica-2: 10.100.10.74
+
+sentinel monitor mymaster 10.100.10.72 6379 2
+sentinel auth-pass mymaster P@ssword321
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+protected-mode no
+
+công ty công nghệ thông minh
+công ty xdb
+công ty tân hồng hà
+
+P@ssword321
+
+c@lepQAtE3HwhIh%
+
+resize2fs /dev/vda1
+
+growpart /dev/vda 1
+
+requirepass "c@lepQAtE3HwhIh%"
+masterauth "c@lepQAtE3HwhIh%"
+replicaof 10.100.10.173 6379
+
+
+sentinel auth-pass mymaster c@lepQAtE3HwhIh%
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+protected-mode no
+
+NoN4a*Mn0S9QJQFJ
+
+Chuyển slave thành master:
+chạy lệnh sau: SLAVEOF NO ONE
+
+swW^fR2Cuzt3Qnrt
+
+/data1/meey3d/redis/docker-compose.yml
+/data2/redis/docker-compose.yml
+/data2/webv2-redis-test/docker-compose.yml
+
+version: '2'
+services:
+  redis-meeyland-stg:
+    container_name: redis-meeyland-stg
+    restart: unless-stopped
+    image: 'bitnami/redis:5.0'
+    environment:
+      - REDIS_PASSWORD=4WobzGnaPA
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6383:6379'
+    volumes:
+      - './redis-data/meeyland/stg:/bitnami/redis/data'

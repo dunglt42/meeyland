@@ -1,0 +1,19 @@
+Dear đội ngũ devOps,
+Phục vụ cho việc nâng cấp dự án tài khoản doanh nghiệp, phần liên quan đến sdk của tài khoản doanh nghiệp,
+hiện tại giai đoạn này chưa sửa chữa domain trong sdk nên mong muốn phía bên devOps thực hiện giúp proxy giữa các domain này giúp bên mình
+DEV:
+- https://v3-api.meey.dev/org/v4 -> https://doanhnghiep-api-test.meey.dev/org/v4
+
+- https://v3-api.meey.dev/org/v1 -> https://doanhnghiep-api-test.meey.dev/org/v1
+
+STG:
+- https://v3-api-stag.meey.dev/org/v4 ->https://doanhnghiep-api-stag.meey.dev/org/v4
+
+- https://v3-api-stag.meey.dev/org/v1 -> https://doanhnghiep-api-stag.meey.dev/org/v1
+
+Ngoài ra mong muốn phía devOps dựng một con server phục vụ cho con pro tài khoản doanh nghiệp.
+
+- Chuẩn bị
++ Doamin, Git (CICD)
++ Kiến trúc
++ k8s

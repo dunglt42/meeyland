@@ -1,0 +1,21 @@
+micronaut:
+  security:
+    enabled: true
+  server:
+    port: 8080
+akhq:
+  connections:
+    kafka-dev:
+      properties:
+        enable.idempotence: false
+        bootstrap.servers: "kafka1:9091,kafka2:9092,kafka3:9093"
+  clients-defaults:
+    consumer:
+      properties:
+        default.api.timeout.ms: 15000000
+  security:
+    basic-auth:
+      - username: admin
+        password: "e5d38176c4a8f6e7e2f115b29f85db1acd133f1167e9e4c8da43938cdc86b3eb"
+        groups:
+        - admin

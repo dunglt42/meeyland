@@ -1,0 +1,428 @@
+Reference: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04
+
+- Lệnh dump database
+pg_dump -U sammy -W -F c -b -v -f "postgres.backup" postgres
+
+pg_dump -U sammy -W -F c -b -v -f "postgres.backup" postgres
+
+scp -i .ssh/id_rsa sammy.backup ubuntu@m172.31.32.169:~/.
+
+pg_restore -U sammy -d sammy -v "sammy.backup"
+
+- Install specific version
+sudo apt update
+sudo apt upgrade
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt update
+sudo apt install postgresql-15
+psql --version
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+sudo -u postgres psql
+
+
+- Lỗi sau:
+Tôi access vào postgres database bằng phần mềm dbever nhưng gặp lỗi sau:
+FATAL: no pg_hba.conf entry for host "27.72.100.4", user "sammy", database "sammy", SSL on
+- Cách sửa:
+sudo nano /etc/postgresql/[version]/main/pg_hba.conf
+add thêm dòng sau vào cuối: host    sammy    sammy    0.0.0.0/0    md5
+
+
+
+thử mục chứa data: /var/lib/postgresql/12/main
+
+pg_basebackup -h 172.31.35.192 -D /var/lib/postgresql/12/main -U postgres -P -v
+
+CREATE USER replicator REPLICATION LOGIN CONNECTION LIMIT 3 ENCRYPTED PASSWORD '98LANGHA@aml';
+
+Link postgres cluster:
+https://www.servermania.com/kb/articles/setup-postgresql-cluster
+https://www.radishlogic.com/postgresql/how-to-install-postgresql-15-on-ubuntu/
+
+https://www.cherryservers.com/blog/how-to-set-up-postgresql-database-replication
+
+Primary node: IP: 194.195.208.82 OS: Ubuntu 22.04 server
+
+Replica node: IP: 139.144.169.79 OS: Ubuntu 22.04 server
+
+host  replication   replica_user  172.31.25.241/32   md5
+
+sudo pg_basebackup -h 172.31.21.111 -U replica_user -X stream -C -S replica_1 -v -R -W -D /var/lib/postgresql/15/main/
+
+SELECT client_addr, state FROM pg_stat_replication;
+
+INSERT INTO  student_details (first_name, last_name, email) VALUES  ('Arthur', 'Spencer', 'arthurspencer@gmail.com');
+
+#######################################################Dump and restore
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres_db
+    image: postgres:12.11-alpine
+    command: postgres -c 'max_connections=1000'
+    environment:
+      POSTGRES_PASSWORD: B(+ukU7#FK)+UKZx
+      PGDATA: /var/lib/postgresql/data
+    network_mode: "host"
+    volumes:
+       - ./data:/var/lib/postgresql/data
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+
+
+
+09:52 - 09:59 : Dump 
+10:23 - 
+
+10:32 - 10:39 : tar
+11:19
+
+11:30 - 11:40 : resrote all
+
+docker exec -i your_container_name pg_dumpall -U your_username > all_databases.sql
+
+backup_meeycrmcommontest
+
+sudo nano /etc/postgresql/12/main/pg_hba.conf
+sudo systemctl restart postgresql
+
+psql -U replica_user -d backup_MeeyCrmCommonTest -f backup_MeeyCrmCommonTest.sql
+psql -U replica_user -d backup_meeycrmcommontest -f backup_MeeyCrmCommonTest.sql
+
+sudo -u postgres psql -f all_databases.sql
+
+
+B1: Dump all database từ postgres 10.0.3.109
+docker exec -i ecfabdc06782 pg_dumpall -U postgres > all_databases.sql
+Duration: 09:36 - 09:41
+
+B2: Nén file dump
+time tar -zcvf all_databases.tar.gz all_databases.sql
+Duration: 09:42 - 09:48
+
+B3: Copy file tar từ 10.0.3.109 sang 10.100.10.65
+scp all_databases.tar.gz root@10.100.10.65:/root
+Dutarion: 09:50 - 09:57
+
+B4: Giải nén file .tar.gz
+time tar -xvf all_databases.tar.gz
+Duration: 09:58 - 09:59
+
+B5: Restore all database to 10.100.10.65
+sudo -u postgres psql -f all_databases.sql
+
+CJTj59*1&1$zsJ06
+
+psql -h 10.100.10.65 -U postgres -d postgres
+
+
+
+meey_crm_account_test
+meey_crm_comment_test
+meey_crm_common_test
+meey_crm_customer_test
+meey_crm_jobs_test
+meey_crm_language_test
+meey_crm_media_test
+meey_crm_order_test
+meey_crm_real_estate_test
+meey_crm_real_time_test
+meey_crm_record_test
+meey_crm_sms_test
+meey_crm_sso_test
+meey_crm_user_test
+service_bus_persistence
+
+###########################Các bước cài đặt postgres master-slave
+Set timezone
+Cài đặt postgres theo guide: https://www.postgresql.org/download/linux/ubuntu/
+
+sudo systemctl enable postgresql
+
+Cài đặt postgres theo guide: https://www.cherryservers.com/blog/how-to-set-up-postgresql-database-replication
+
+#################################
+
+*Database các services MeeyCrm 
+ConnectionString: meeycrm;Password=4RCHQfJop4u3;Host=meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com;Port=5432
+
+-MeeyCrmCommon
+-MeeyCrmComment
+-MeeyCrmMedia
+-MeeyCrmUser
+-MeeyCrmCustomer
+-MeeyCrmRealEstate
+-MeeyCrmRealTime
+-MeeyCrmOrder
+-MeeyCrmRecord
+-MeeyCrmSms
+-MeeyCrmJobs
+-MeeyCrmLanguage
+-ServiceBusPersistence
+
+MeeyCrmComment        
+MeeyCrmCommon         
+MeeyCrmCustomer       
+MeeyCrmJobs           
+MeeyCrmLanguage       
+MeeyCrmMedia          
+MeeyCrmOrder          
+MeeyCrmRealEstate     
+MeeyCrmRealTime       
+MeeyCrmRecord         
+MeeyCrmSms            
+MeeyCrmUser           
+ServiceBusPersistence
+
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmComment > MeeyCrmComment.sql
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmCommon > MeeyCrmCommon.sql
+
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmCustomer > MeeyCrmCustomer.sql      
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmJobs > MeeyCrmJobs.sql          
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmLanguage > MeeyCrmLanguage.sql       
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmMedia > MeeyCrmMedia.sql        
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmOrder > MeeyCrmOrder.sql        
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmRealEstate > MeeyCrmRealEstate.sql    
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmRealTime > MeeyCrmRealTime.sql     
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmRecord > MeeyCrmRecord.sql        
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmSms > MeeyCrmSms.sql          
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmUser > MeeyCrmUser.sql         
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d ServiceBusPersistence > ServiceBusPersistence.sql
+
+postgres | Y%H0VB2S2^Z$ZeQX
+
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmOrder > MeeyCrmOrder.sql
+pg_restore -h localhost -p 5432 -U postgres -d MeeyCrmComment < MeeyCrmComment.sql
+
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmComment > MeeyCrmComment.sql
+
+
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmCommon > "MeeyCrmCommon.dump"
+pg_restore -h 10.100.10.147 -p 5432 -U postgres -d meeycrmcommon MeeyCrmCommon.dump
+
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmCommon MeeyCrmCommon.dump
+pg_restore -h 10.100.10.147 -p 5432 -U postgres -d MeeyCrmCommon MeeyCrmCommon.dump
+
+sudo -u postgres psql
+
+psql -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -U meeycrm -d postgres
+
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmCustomer > "MeeyCrmCustomer.dump"
+pg_restore -h 10.100.10.147 -p 5432 -U postgres -d MeeyCrmCustomer MeeyCrmCustomer.dump
+
+host    all             all             10.100.10.147/32        md5
+
+create database "MeeyCrmComment";        
+create database "MeeyCrmCommon";         
+create database "MeeyCrmCustomer";       
+create database "MeeyCrmJobs";           
+create database "MeeyCrmLanguage";       
+create database "MeeyCrmMedia";          
+create database "MeeyCrmOrder";          
+create database "MeeyCrmRealEstate";     
+create database "MeeyCrmRealTime";       
+create database "MeeyCrmRecord";         
+create database "MeeyCrmSms";            
+create database "MeeyCrmUser";           
+create database "ServiceBusPersistence";
+
+#################################
+ALTER USER meeycrm WITH PASSWORD '9rnUv4%*9lE*K23p';
+ALTER USER rdsadmin WITH PASSWORD '9rnUv4%*9lE*K23p';
+
+create database "MeeyCrmComment";        
+create database "MeeyCrmCommon";         
+create database "MeeyCrmCustomer";       
+create database "MeeyCrmJobs";           
+create database "MeeyCrmLanguage";       
+create database "MeeyCrmMedia";          
+create database "MeeyCrmOrder";          
+create database "MeeyCrmRealEstate";     
+create database "MeeyCrmRealTime";       
+create database "MeeyCrmRecord";         
+create database "MeeyCrmSms";            
+create database "MeeyCrmUser";           
+create database "ServiceBusPersistence";
+
+postgres | 4RCHQfJop4u3
+Dump: 16:46 - 17:02
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmComment > MeeyCrmComment.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmCommon > MeeyCrmCommon.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmCustomer > MeeyCrmCustomer.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmJobs > MeeyCrmJobs.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmLanguage > MeeyCrmLanguage.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmMedia > MeeyCrmMedia.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmOrder > MeeyCrmOrder.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmRealEstate > MeeyCrmRealEstate.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmRealTime > MeeyCrmRealTime.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmRecord > MeeyCrmRecord.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmSms > MeeyCrmSms.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc MeeyCrmUser > MeeyCrmUser.dump
+pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p5432 -Umeeycrm -Fc ServiceBusPersistence > ServiceBusPersistence.dump
+
+Copy file: 
+
+17:09 - 17:13
+
+ALTER USER postgres WITH PASSWORD '4RCHQfJop4u3';
+
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmComment MeeyCrmComment.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmCommon MeeyCrmCommon.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmCustomer MeeyCrmCustomer.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmJobs MeeyCrmJobs.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmLanguage MeeyCrmLanguage.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmMedia MeeyCrmMedia.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmOrder MeeyCrmOrder.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmRealEstate MeeyCrmRealEstate.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmRealTime MeeyCrmRealTime.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmRecord MeeyCrmRecord.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmSms MeeyCrmSms.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmUser MeeyCrmUser.dump
+pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d ServiceBusPersistence ServiceBusPersistence.dump
+
+
+#!/bin/bash
+
+# Thông tin kết nối đến database
+host="meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com"
+port="5432"
+username="meeycrm"
+password="4RCHQfJop4u3"  # Thay your_password bằng mật khẩu của bạn
+
+# Danh sách các database cần dump
+databases=("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence")
+
+# Thực hiện dump cho từng database trong danh sách
+for database_name in "${databases[@]}"
+do
+  # Tên file dump
+  dump_file="${database_name}.dump"
+
+  # Thực hiện dump database
+  PGPASSWORD="$password" pg_dump -h "$host" -p "$port" -U "$username" -Fc "$database_name" > "$dump_file"
+
+  # Kiểm tra nếu dump thành công
+  if [ $? -eq 0 ]; then
+    echo "Dump database $database_name thành công. File dump là: $dump_file"
+  else
+    echo "Lỗi khi dump database $database_name."
+  fi
+done
+
+"MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence"
+
+
+################################################
+
+#!/bin/bash
+
+# Thông tin kết nối đến database
+host="10.100.10.147"
+port="5432"
+username="postgres"
+password="4RCHQfJop4u3"  # Thay your_password bằng mật khẩu của bạn
+
+# Danh sách các database cần restore
+databases=("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence")
+
+# Thực hiện restore cho từng database trong danh sách
+for database_name in "${databases[@]}"
+do
+  # Tên file dump
+  dump_file="${database_name}.dump"
+
+  # Thực hiện restore database
+  echo "Đang restore database $database_name..."
+  PGPASSWORD="$password" pg_restore -h "$host" -p "$port" -U "$username" --no-owner --no-privileges -d "$database_name" "$dump_file"
+
+  # Kiểm tra kết quả restore
+  if [ $? -eq 0 ]; then
+    echo "Restore database $database_name thành công."
+  else
+    echo "Lỗi khi restore database $database_name."
+  fi
+done
+
+#############################################Back up
+
+#!/bin/bash
+
+# Xóa các folder có định dạng POSTGRES_ALL_10.100.10.75_*
+for folder in POSTGRES_ALL_10.100.10.75_*; do
+    if [ -d "$folder" ]; then
+        rm -r "$folder"
+        echo "Đã xóa folder $folder cũ."
+    fi
+done
+
+# Tạo folder mới
+backup_folder="POSTGRES_ALL_10.100.10.75_$(date +"%Y%m%d")"
+mkdir "$backup_folder"
+
+# Thông tin kết nối đến database
+host="10.100.10.147"
+port="5432"
+username="postgres"
+password="4RCHQfJop4u3"  # Thay your_password bằng mật khẩu của bạn
+
+# Danh sách các database cần dump
+databases=(("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence"))
+
+# Thực hiện dump cho từng database trong danh sách
+for database_name in "${databases[@]}"
+do
+  # Tên file dump
+  dump_file="POSTGRES_ALL_10.100.10.147_$(date +"%Y%m%d")/${database_name}.dump"
+
+  # Thực hiện dump database
+  PGPASSWORD="$password" pg_dump -h "$host" -p "$port" -U "$username" -Fc "$database_name" > "$dump_file"
+
+  # Kiểm tra nếu dump thành công
+  if [ $? -eq 0 ]; then
+    echo "Dump database $database_name thành công. File dump là: $dump_file"
+  else
+    echo "Lỗi khi dump database $database_name."
+  fi
+done
+
+tar -czf "${backup_folder}.tar.gz" "$backup_folder"
+
+# Kiểm tra xem việc nén thành công hay không
+if [ $? -eq 0 ]; then
+    echo "Nén folder backup thành công. File nén là: ${backup_folder}.tar.gz"
+    # Sau khi nén, xóa folder backup không cần thiết
+    rm -r "$backup_folder"
+else
+    echo "Lỗi khi nén folder backup."
+fi
+
+#### FTP upload #########################################################
+FTP_SITE=10.100.10.119
+FTP_USER=meeybackup
+FTP_PASS=PyvDNaV0iTwTAO3VyUM0
+DIR=meeyland
+DATE_UPLOAD=`date +"%Y%m%d"`
+
+ftp -in <<EOF
+open $FTP_SITE
+user $FTP_USER $FTP_PASS
+binary
+prompt
+mkdir $DIR
+cd $DIR
+mkdir $DATE_UPLOAD
+cd $DATE_UPLOAD
+mput $backup_folder.tar.gz
+close
+bye
+EOF
+
+PGPASSWORD="ehx%vAP6ljS06ec5" pg_dumpall -h localhost -p 5432 -U postgres -f POSTGRES_ALL_10.100.10.75_20240510/all_databases.dump
+
+0 2 * * * /root/backup/script_backup.sh

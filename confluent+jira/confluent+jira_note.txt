@@ -1,0 +1,26 @@
+- Domain:
++ https://jira.meeyland.com/
++ https://confluence.meeyland.com/
+
+ssh truongblx@10.100.11.111
+dungle@meeyland:~/Downloads$ ping confluence.meeyland.com
+PING confluence.meeyland.com (42.96.40.113) 56(84) bytes of data.
+64 bytes from 42.96.40.113 (42.96.40.113): icmp_seq=1 ttl=59 time=4.50 ms
+64 bytes from 42.96.40.113 (42.96.40.113): icmp_seq=2 ttl=59 time=3.52 ms
+64 bytes from 42.96.40.113 (42.96.40.113): icmp_seq=3 ttl=59 time=3.10 ms
+
+root@jira-server:~# docker ps
+CONTAINER ID   IMAGE                                     COMMAND                  CREATED        STATUS          PORTS                                                           NAMES
+4f4e3c5bcf6c   atlassian/confluence-server:latest        "/usr/bin/tini -- /e…"   3 months ago   Up 13 minutes   0.0.0.0:8090-8091->8090-8091/tcp, :::8090-8091->8090-8091/tcp   confluence
+534a29b256fb   postgres                                  "docker-entrypoint.s…"   3 months ago   Up 3 months     5432/tcp                                                        postgressql-confluence
+a50ea9ef299c   atlassian/jira-software:latest            "/usr/bin/tini -- /e…"   3 months ago   Up 3 months     0.0.0.0:8080->8080/tcp, :::8080->8080/tcp                       jira
+8db782226629   atlassian/jira-servicemanagement:5.11.0   "/usr/bin/tini -- /e…"   3 months ago   Up 3 months     0.0.0.0:8081->8080/tcp, :::8081->8080/tcp                       servicemanagement
+fcda6a647a18   postgres                                  "docker-entrypoint.s…"   3 months ago   Up 3 months     0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                       postgressql-jira
+root@jira-server:~#
+
+Quan tâm 2 container: confluence và jira
+
+/etc/nginx/sites-available/jira.meeyland.com.conf
+
+/home/truongblx/atlassian-software/confluence-compose.yml 
+=>> Nếu bị lỗi OOM nữa thì tăng 2 tham số JVM_MINIMUM_MEMORY và JVM_MAXIMUM_MEMORY

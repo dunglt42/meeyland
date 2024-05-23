@@ -1,0 +1,51 @@
+meey-ai-tjtiessunrwe-node-3          Ready    <none> 10.100.10.127
+meey-ai-tjtiessunrwe-node-5          Ready    <none> 10.100.10.27 
+meey-ai-tjtiessunrwe-node-6          Ready    <none> 10.100.10.137
+meey-basemap-p-rwn5dix72s6l-node-0   Ready    <none> 10.100.10.246
+meey-basemap-t-34zu37zjmgzd-node-0   Ready    <none> 10.100.10.42 
+meey-default-w-v45tyavxij7y-node-0   Ready    <none> 10.100.10.47 
+meey-logging-5za5nsgmr4ie-node-0     Ready    <none> 10.100.10.166
+meey-meeycrm-ri2vyarnxzvw-node-0     Ready    <none> 10.100.10.44 
+meey-meeycrm-ri2vyarnxzvw-node-1     Ready    <none> 10.100.10.92 
+meey-meeycrm-ri2vyarnxzvw-node-2     Ready    <none> 10.100.10.126
+meey-meeyfinan-6gfxkpmwz4gv-node-0   Ready    <none> 10.100.10.144
+meey-meeyfinan-6gfxkpmwz4gv-node-1   Ready    <none> 10.100.10.236
+meey-meeyfinan-6gfxkpmwz4gv-node-2   Ready    <none> 10.100.10.186
+meey-meeyfinan-6gfxkpmwz4gv-node-3   Ready    <none> 10.100.10.167
+meey-meeyfinan-hq4n4rujxrig-node-0   Ready    <none> 10.100.10.158
+meey-meeyfinan-hq4n4rujxrig-node-1   Ready    <none> 10.100.10.107
+meey-meeyfinan-hq4n4rujxrig-node-2   Ready    <none> 10.100.10.46 
+meey-meeyid-fe-k3a7wouz3zxb-node-0   Ready    <none> 10.100.10.132
+meey-meeyid-fe-k3a7wouz3zxb-node-1   Ready    <none> 10.100.10.205
+meey-meeyid-vopf3vmffpzv-node-0      Ready    <none> 10.100.10.213
+meey-meeyid-vopf3vmffpzv-node-1      Ready    <none> 10.100.10.114
+meey-meeyid-vopf3vmffpzv-node-2      Ready    <none> 10.100.10.88 
+meey-meeypay-3ctf7sw4w2bh-node-0     Ready    <none> 10.100.10.57 
+meey-pro-7wmndibtzt36-node-0         Ready    <none> 10.100.10.146 - OK
+meey-pro-7wmndibtzt36-node-1         Ready    <none> 10.100.10.111 - OK
+meey-pro-7wmndibtzt36-node-2         Ready    <none> 10.100.10.215 - OK
+meey-pro-7wmndibtzt36-node-3         Ready    <none> 10.100.10.131 - OK
+meey-pro-7wmndibtzt36-node-4         Ready    <none> 10.100.10.172 - OK
+meey-prod-fe-rvoi36u7fuek-node-0     Ready    <none> 10.100.10.188
+meey-prod-fe-rvoi36u7fuek-node-1     Ready    <none> 10.100.10.210
+meey-prod-fe-rvoi36u7fuek-node-2     Ready    <none> 10.100.10.67 
+meey-stag-fe-dpd6hvmcwkrs-node-0     Ready    <none> 10.100.10.17 
+meey-stag-fe-dpd6hvmcwkrs-node-1     Ready    <none> 10.100.10.59 
+meey-stag-gmiw3hnqxna5-node-0        Ready    <none> 10.100.10.226
+meey-stag-gmiw3hnqxna5-node-1        Ready    <none> 10.100.10.94 
+meey-stag-gmiw3hnqxna5-node-2        Ready    <none> 10.100.10.227
+meey-systemnod-gerlap6sivhx-node-0   Ready    <none> 10.100.10.136
+meey-systemnod-gerlap6sivhx-node-1   Ready    <none> 10.100.10.149
+meey-test-1-gx2amxfogdbo-node-0      Ready    <none> 10.100.10.93 
+meey-test-1-gx2amxfogdbo-node-1      Ready    <none> 10.100.10.54 
+meey-test-1-gx2amxfogdbo-node-2      Ready    <none> 10.100.10.104
+meey-test-fe-zqblcgf2fre3-node-0     Ready    <none> 10.100.10.45 
+meey-test-fe-zqblcgf2fre3-node-1     Ready    <none> 10.100.10.250
+meey-test-fe-zqblcgf2fre3-node-2     Ready    <none> 10.100.10.41 
+meey-test-fglpc2duclvb-node-12       Ready    <none> 10.100.10.245 - OK
+meey-test-fglpc2duclvb-node-13       Ready    <none> 10.100.10.244 - OK
+meey-test-fglpc2duclvb-node-5        Ready    <none> 10.100.10.222 - OK
+meey-vswddugykkbj-master-0           Ready    master 10.100.10.152 - OK
+meey-vswddugykkbj-master-1           Ready    master 10.100.10.24 - OK
+meey-vswddugykkbj-master-2           Ready    master 10.100.10.151 - OK
+meey-vswddugykkbj-node-0             Ready    <none> 10.100.10.254 - OK
