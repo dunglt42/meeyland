@@ -2,7 +2,7 @@
 apt install openjdk-11-jdk -y
 
 
-### sudo nano  /etc/systemd/system/zookeeper.service
+### sudo nano /etc/systemd/system/zookeeper.service
 [Unit]
 Description=Apache Zookeeper server
 Documentation=http://zookeeper.apache.org

@@ -17,3 +17,10 @@ Ngoài ra mong muốn phía devOps dựng một con server phục vụ cho con p
 + Doamin, Git (CICD)
 + Kiến trúc
 + k8s
+
+10.100.10.64 - kafka1-production-doanhnghiep
+10.100.10.65 - kafka2-production-doanhnghiep
+10.100.10.66 - kafka3-production-doanhnghiep
+
+/usr/local/kafka/bin/kafka-topics.sh --bootstrap-server 10.100.10.64:9092,10.100.10.65:9092,10.100.10.66:9092 --list
+/usr/local/kafka/bin/kafka-topics.sh --create --bootstrap-server 10.100.10.64:9092,10.100.10.65:9092,10.100.10.66:9092 --replication-factor 3 --partitions 50 --topic demo1
