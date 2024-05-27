@@ -1,6 +1,6 @@
 Link về Redis Sentinal: https://viblo.asia/p/redis-sentinel-la-cai-gi-m68Z0eaMlkG
 Link cài đặt master slave sentinel: https://docs.vultr.com/setup-high-availability-redis-using-sentinel-in-ubuntu
-
+dump elasticache: https://repost.aws/knowledge-center/elasticache-redis-backup-export-to-s3
 
 - master: 10.100.10.72
 - replica-1: 10.100.10.73
@@ -59,6 +59,19 @@ services:
     volumes:
       - './redis-data/meeyland/stg:/bitnami/redis/data'
 ### Meeyland prod
-pass redis meeyland production: suCZRtKC&@6Wi7Mb
+pass redis meeyland production 6381: suCZRtKC&@6Wi7Mb
+pass redis meeyland production 6382: Lf9SOyT3j@kEeqFG
 meeyland-apiv3 : meeyland-apiv3.wilnwv.0001.apse1.cache.amazonaws.com:6379
 meeylandv4-fe-prod : meeylandv4-fe-prod.wilnwv.ng.0001.apse1.cache.amazonaws.com:6379
+
+### Dump to aws
+redis-apiv3-meeyland	meeyland-apiv3	Manual	Creating	cache.r6g.xlarge	May 27, 2024, 17:29:17 (UTC+07:00)	19 GB =>>> 18:05
+redis-fev4-meeyland	meeylandv4-fe-prod-001	Manual	Creating	cache.r6g.xlarge	May 27, 2024, 17:47:59 (UTC+07:00)	19 GB =>> 18:30
+
+### copy to S3
+redis-apiv3-meeyland : 18:09 - 18:11
+redis-fev4-meeyland : 18:32 - 18:35
+
+### copy to local
+redis-apiv3-meeyland : 18:38 - 18:11
+redis-fev4-meeyland : 18:32 - 18:35
