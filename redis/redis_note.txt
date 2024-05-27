@@ -58,3 +58,7 @@ services:
       - '6383:6379'
     volumes:
       - './redis-data/meeyland/stg:/bitnami/redis/data'
+### Meeyland prod
+pass redis meeyland production: suCZRtKC&@6Wi7Mb
+meeyland-apiv3 : meeyland-apiv3.wilnwv.0001.apse1.cache.amazonaws.com:6379
+meeylandv4-fe-prod : meeylandv4-fe-prod.wilnwv.ng.0001.apse1.cache.amazonaws.com:6379
