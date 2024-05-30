@@ -1,3 +1,11 @@
+### Cluster
+https://stackoverflow.com/questions/73656873/unable-to-install-mongodb-in-ubuntu-22-04-mongodb-org-libssl1-1
+https://cloudinfrastructureservices.co.uk/how-to-create-mongodb-cluster-multi-node-on-ubuntu-20-04/
+https://www.digitalocean.com/community/tutorials/how-to-configure-a-mongodb-replica-set-on-ubuntu-20-04
+https://serverspace.io/support/help/mongodb-cluster-configuration/
+Sau khi init cluster xong thì tạo user ở con primary
+
+###
 https://docs.digitalocean.com/products/databases/mongodb/how-to/import-collections/
 mongodump --uri "mongodb+srv://meeyland-test:42mA6D80391cMTrR@meeyid-dev-ffa4fb03.mongo.ondigitalocean.com" --out databasedump
 mongorestore -d=meeyland-test --host=localhost --port=27017 ./meeyland-test/
@@ -30,3 +38,23 @@ mongodump --uri "mongodb+srv://meeyland-test:42mA6D80391cMTrR@meeyid-dev-ffa4fb0
 
 mongodump --uri "mongodb+srv://meeyland-test:42mA6D80391cMTrR@meeyid-dev-ffa4fb03.mongo.ondigitalocean.com" --out databasedump
 mongorestore -d=meeyland-test --host=localhost --port=27017 ./meeyland-test/
+
+db.createUser(
+  {
+    user: "admin",
+    pwd: passwordPrompt(),
+    roles: [ { role: "root", db: "admin" }, "readWriteAnyDatabase" ]
+ }
+)
+
+admin / 98LANGHA@aml
+
+rs.initiate(
+... {
+... _id: "replica01",
+... members: [
+... { _id: 0, host: "mongodb1" },
+... { _id: 1, host: "mongodb2" },
+... { _id: 2, host: "mongodb3" }
+... ]
+... })
