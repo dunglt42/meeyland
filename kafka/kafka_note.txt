@@ -369,3 +369,5 @@ WantedBy=multi-user.target
 ### stop, start service
 systemctl restart kafka3-stg
 systemctl enable kafka3-stg
+
+kafkacat -b ${broker} -X auto.offset.reset=earliest -K: -G cg01 "${topic}" | kafkacat -b ${broker2} -t "${topic}" -K: -P
