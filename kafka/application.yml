@@ -5,10 +5,18 @@ micronaut:
     port: 8080
 akhq:
   connections:
-    kafka-dev:
+    meeycrm-kafka-dev:
       properties:
         enable.idempotence: false
-        bootstrap.servers: "kafka1:9091,kafka2:9092,kafka3:9093"
+        bootstrap.servers: "10.100.10.180:9091,10.100.10.180:9092,10.100.10.180:9093"
+    meeycrm-kafka-stg:
+      properties:
+        enable.idempotence: false
+        bootstrap.servers: "10.100.10.180:19091,10.100.10.180:19092,10.100.10.180:19093"
+    meeycrm-kafka-prod:
+      properties:
+        enable.idempotence: false
+        bootstrap.servers: "10.100.10.191:9092,10.100.10.192:9092,10.100.10.194:9092"
   clients-defaults:
     consumer:
       properties:
@@ -19,3 +27,4 @@ akhq:
         password: "e5d38176c4a8f6e7e2f115b29f85db1acd133f1167e9e4c8da43938cdc86b3eb"
         groups:
         - admin
+    default-group: no-roles

@@ -1,36 +1,200 @@
-sudo apt-get install -y npm
-npm install elasticdump
+### test
+version: '3.3'
+services:
+  elasticsearch:
+    container_name: es01
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=Q4VFx9Mh+vIt2P4bsyQM
+      - "ES_JAVA_OPTS=-Xms1000m -Xmx1000m"
+      #- xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - bootstrap.memory_lock=true
+      - indices.query.bool.max_clause_count=3072
+      #- xpack.security.transport.ssl.enabled=true
+      #- path.repo=/usr/share/elasticsearch/backup
+      #- max_shards_per_node=10000000000 #one billion 
+      - 'path.repo=/tmp/backup'
+    ports:
+      - 9200:9200
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+      #- elasticsearch_logs:/usr/share/elasticsearch/logs
+      #- elasticsearch_backup:/usr/share/elasticsearch/backup
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: "65536"
+        hard: "65536"
 
-sudo npm install elasticdump -g
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    restart: always
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      #- XPACK_MONITORING_ENABLED=true
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=Q4VFx9Mh+vIt2P4bsyQM
+    #volumes:
+    #  - kibana_logtrail:/usr/share/kibana/plugins/logtrail
 
-curl -X GET "10.10.21.126:9200/_alias?pretty"
 
-elasticdump --input=http://10.10.21.126:9200/srpauto --output=http://elastic:Q4VFx9Mh+vIt2P4bsyQM@10.100.10.157:9200/srpauto -type=alias
+### stg
 
-v0users
-.kibana_task_manager
-meey_land_v5.tags
-test
-srplinks
-.apm-agent-configuration
-srpslinks
-cms_blogs
-.kibana_1
-srpauto
-meey-land-articles
-tags
-meey_land_v5.article
-v7articles
-srpproperties
-v6articles
-locations
-cms-blog-index
-srpstructures
+version: '3.3'
+services:
+  elasticsearch:
+    container_name: es01-stg
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=qgslKhUJXUIj
+      - "ES_JAVA_OPTS=-Xms1000m -Xmx1000m"
+      #- xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - bootstrap.memory_lock=true
+      - indices.query.bool.max_clause_count=3072
+      #- xpack.security.transport.ssl.enabled=true
+      #- path.repo=/usr/share/elasticsearch/backup
+      #- max_shards_per_node=10000000000 #one billion 
+    ports:
+      - 9202:9200
+      - 9302:9300
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+      #- elasticsearch_logs:/usr/share/elasticsearch/logs
+      #- elasticsearch_backup:/usr/share/elasticsearch/backup
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: "65536"
+        hard: "65536"
 
-curl -s http://10.10.21.126:9200/_cat/indices | awk '{print $3}' > es.index
+
+  kibana:
+    container_name: kibana-stg
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    restart: always
+    ports:
+      - "5602:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      #- XPACK_MONITORING_ENABLED=true
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=qgslKhUJXUIj
+    #volumes:
+    #  - kibana_logtrail:/usr/share/kibana/plugins/logtrail
+
+### prod
+
+version: '3.3'
+services:
+  elasticsearch:
+    container_name: es01-prod
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=qgslKhUJXUIj
+      - "ES_JAVA_OPTS=-Xms1000m -Xmx1000m"
+      #- xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - bootstrap.memory_lock=true
+      - indices.query.bool.max_clause_count=3072
+      #- xpack.security.transport.ssl.enabled=true
+      #- path.repo=/usr/share/elasticsearch/backup
+      #- max_shards_per_node=10000000000 #one billion 
+    ports:
+      - 9203:9200
+      - 9303:9300
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+      #- elasticsearch_logs:/usr/share/elasticsearch/logs
+      #- elasticsearch_backup:/usr/share/elasticsearch/backup
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: "65536"
+        hard: "65536"
+
+
+  kibana:
+    container_name: kibana-prod
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    restart: always
+    ports:
+      - "5603:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      #- XPACK_MONITORING_ENABLED=true
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=qgslKhUJXUIj
+    #volumes:
+    #  - kibana_logtrail:/usr/share/kibana/plugins/logtrail
+
+
+dump
+curl -s https://elastic:w8H84phFPUL52fWb31Z31T2R@meeycrm-es.meeycrm.com/_cat/indices | awk '{print $3}' > es.index
 FILES="$(cat es.index)"
 for i in $FILES
 do	
    echo $i
-   elasticdump --input=http://10.10.21.126:9200/$i --output=http://elastic:Q4VFx9Mh+vIt2P4bsyQM@10.100.10.157:9200/$i --type=alias
+   elasticdump \
+	     --input=https://elastic:w8H84phFPUL52fWb31Z31T2R@meeycrm-es.meeycrm.com/$i \
+	       --output=http://elastic:qgslKhUJXUIj@10.100.10.181:9203/$i \
+	         --type=alias
 done
+
+dump
+curl -s https://elastic:w8H84phFPUL52fWb31Z31T2R@meeycrm-es.meeycrm.com/_cat/indices | awk '{print $3}' > es.index
+FILES="$(cat es.index)"
+for i in $FILES
+do	
+   echo $i
+   elasticdump \
+	     --input=https://elastic:w8H84phFPUL52fWb31Z31T2R@meeycrm-es.meeycrm.com/$i \
+	       --output=http://elastic:qgslKhUJXUIj@10.100.10.181:9203/$i \
+	         --type=analyzer
+   elasticdump \
+	     --input=https://elastic:w8H84phFPUL52fWb31Z31T2R@meeycrm-es.meeycrm.com/$i \
+	       --output=http://elastic:qgslKhUJXUIj@10.100.10.181:9203/$i \
+	         --type=mapping
+   elasticdump \
+	     --input=https://elastic:w8H84phFPUL52fWb31Z31T2R@meeycrm-es.meeycrm.com/$i \
+	       --output=http://elastic:qgslKhUJXUIj@10.100.10.181:9203/$i \
+	         --type=data
+done
+

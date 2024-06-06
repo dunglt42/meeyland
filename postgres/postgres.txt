@@ -1,59 +1,7 @@
 Reference: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04
-
-- Lệnh dump database
-pg_dump -U sammy -W -F c -b -v -f "postgres.backup" postgres
-
-pg_dump -U sammy -W -F c -b -v -f "postgres.backup" postgres
-
-scp -i .ssh/id_rsa sammy.backup ubuntu@m172.31.32.169:~/.
-
-pg_restore -U sammy -d sammy -v "sammy.backup"
-
-- Install specific version
-sudo apt update
-sudo apt upgrade
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt update
-sudo apt install postgresql-15
-psql --version
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
-sudo -u postgres psql
-
-
-- Lỗi sau:
-Tôi access vào postgres database bằng phần mềm dbever nhưng gặp lỗi sau:
-FATAL: no pg_hba.conf entry for host "27.72.100.4", user "sammy", database "sammy", SSL on
-- Cách sửa:
-sudo nano /etc/postgresql/[version]/main/pg_hba.conf
-add thêm dòng sau vào cuối: host    sammy    sammy    0.0.0.0/0    md5
-
-
-
-thử mục chứa data: /var/lib/postgresql/12/main
-
-pg_basebackup -h 172.31.35.192 -D /var/lib/postgresql/12/main -U postgres -P -v
-
-CREATE USER replicator REPLICATION LOGIN CONNECTION LIMIT 3 ENCRYPTED PASSWORD '98LANGHA@aml';
-
-Link postgres cluster:
 https://www.servermania.com/kb/articles/setup-postgresql-cluster
 https://www.radishlogic.com/postgresql/how-to-install-postgresql-15-on-ubuntu/
-
 https://www.cherryservers.com/blog/how-to-set-up-postgresql-database-replication
-
-Primary node: IP: 194.195.208.82 OS: Ubuntu 22.04 server
-
-Replica node: IP: 139.144.169.79 OS: Ubuntu 22.04 server
-
-host  replication   replica_user  172.31.25.241/32   md5
-
-sudo pg_basebackup -h 172.31.21.111 -U replica_user -X stream -C -S replica_1 -v -R -W -D /var/lib/postgresql/15/main/
-
-SELECT client_addr, state FROM pg_stat_replication;
-
-INSERT INTO  student_details (first_name, last_name, email) VALUES  ('Arthur', 'Spencer', 'arthurspencer@gmail.com');
 
 #######################################################Dump and restore
 version: '3'
@@ -74,29 +22,6 @@ services:
       driver: "json-file"
       options:
         max-size: "50m"
-
-
-
-09:52 - 09:59 : Dump 
-10:23 - 
-
-10:32 - 10:39 : tar
-11:19
-
-11:30 - 11:40 : resrote all
-
-docker exec -i your_container_name pg_dumpall -U your_username > all_databases.sql
-
-backup_meeycrmcommontest
-
-sudo nano /etc/postgresql/12/main/pg_hba.conf
-sudo systemctl restart postgresql
-
-psql -U replica_user -d backup_MeeyCrmCommonTest -f backup_MeeyCrmCommonTest.sql
-psql -U replica_user -d backup_meeycrmcommontest -f backup_MeeyCrmCommonTest.sql
-
-sudo -u postgres psql -f all_databases.sql
-
 
 B1: Dump all database từ postgres 10.0.3.109
 docker exec -i ecfabdc06782 pg_dumpall -U postgres > all_databases.sql
@@ -138,47 +63,6 @@ meey_crm_sms_test
 meey_crm_sso_test
 meey_crm_user_test
 service_bus_persistence
-
-###########################Các bước cài đặt postgres master-slave
-Set timezone
-Cài đặt postgres theo guide: https://www.postgresql.org/download/linux/ubuntu/
-
-sudo systemctl enable postgresql
-
-Cài đặt postgres theo guide: https://www.cherryservers.com/blog/how-to-set-up-postgresql-database-replication
-
-#################################
-
-*Database các services MeeyCrm 
-ConnectionString: meeycrm;Password=4RCHQfJop4u3;Host=meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com;Port=5432
-
--MeeyCrmCommon
--MeeyCrmComment
--MeeyCrmMedia
--MeeyCrmUser
--MeeyCrmCustomer
--MeeyCrmRealEstate
--MeeyCrmRealTime
--MeeyCrmOrder
--MeeyCrmRecord
--MeeyCrmSms
--MeeyCrmJobs
--MeeyCrmLanguage
--ServiceBusPersistence
-
-MeeyCrmComment        
-MeeyCrmCommon         
-MeeyCrmCustomer       
-MeeyCrmJobs           
-MeeyCrmLanguage       
-MeeyCrmMedia          
-MeeyCrmOrder          
-MeeyCrmRealEstate     
-MeeyCrmRealTime       
-MeeyCrmRecord         
-MeeyCrmSms            
-MeeyCrmUser           
-ServiceBusPersistence
 
 pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmComment > MeeyCrmComment.sql
 pg_dump -h meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com -p 5432 -U meeycrm -d MeeyCrmCommon > MeeyCrmCommon.sql
@@ -286,83 +170,21 @@ pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCr
 pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d MeeyCrmUser MeeyCrmUser.dump
 pg_restore -h localhost -p 5432 -U postgres --no-owner --no-privileges -d ServiceBusPersistence ServiceBusPersistence.dump
 
+0 2 * * * /root/backup/script_backup.sh
 
-#!/bin/bash
-
-# Thông tin kết nối đến database
-host="meeycrm-prod.c1uwhwoj80qk.ap-southeast-1.rds.amazonaws.com"
-port="5432"
-username="meeycrm"
-password="4RCHQfJop4u3"  # Thay your_password bằng mật khẩu của bạn
-
-# Danh sách các database cần dump
-databases=("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence")
-
-# Thực hiện dump cho từng database trong danh sách
-for database_name in "${databases[@]}"
-do
-  # Tên file dump
-  dump_file="${database_name}.dump"
-
-  # Thực hiện dump database
-  PGPASSWORD="$password" pg_dump -h "$host" -p "$port" -U "$username" -Fc "$database_name" > "$dump_file"
-
-  # Kiểm tra nếu dump thành công
-  if [ $? -eq 0 ]; then
-    echo "Dump database $database_name thành công. File dump là: $dump_file"
-  else
-    echo "Lỗi khi dump database $database_name."
-  fi
-done
-
-"MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence"
-
-
-################################################
-
-#!/bin/bash
-
-# Thông tin kết nối đến database
-host="10.100.10.147"
-port="5432"
-username="postgres"
-password="4RCHQfJop4u3"  # Thay your_password bằng mật khẩu của bạn
-
-# Danh sách các database cần restore
-databases=("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence")
-
-# Thực hiện restore cho từng database trong danh sách
-for database_name in "${databases[@]}"
-do
-  # Tên file dump
-  dump_file="${database_name}.dump"
-
-  # Thực hiện restore database
-  echo "Đang restore database $database_name..."
-  PGPASSWORD="$password" pg_restore -h "$host" -p "$port" -U "$username" --no-owner --no-privileges -d "$database_name" "$dump_file"
-
-  # Kiểm tra kết quả restore
-  if [ $? -eq 0 ]; then
-    echo "Restore database $database_name thành công."
-  else
-    echo "Lỗi khi restore database $database_name."
-  fi
-done
-
-#############################################Back up
-
+### script_backup
 #!/bin/bash
 
 # Xóa các folder có định dạng POSTGRES_ALL_10.100.10.75_*
-for folder in POSTGRES_ALL_10.100.10.75_*; do
-    if [ -d "$folder" ]; then
+for folder in POSTGRES_ALL_10.100.10.147_*; do
+#    if [ -d "$folder" ]; then
         rm -r "$folder"
-        echo "Đã xóa folder $folder cũ."
-    fi
+#        echo "Đã xóa folder $folder cũ."
+#    fi
 done
 
 # Tạo folder mới
-backup_folder="POSTGRES_ALL_10.100.10.75_$(date +"%Y%m%d")"
+backup_folder="POSTGRES_ALL_10.100.10.147_$(date +"%Y%m%d")"
 mkdir "$backup_folder"
 
 # Thông tin kết nối đến database
@@ -372,7 +194,7 @@ username="postgres"
 password="4RCHQfJop4u3"  # Thay your_password bằng mật khẩu của bạn
 
 # Danh sách các database cần dump
-databases=(("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence"))
+databases=("MeeyCrmComment" "MeeyCrmCommon" "MeeyCrmCustomer" "MeeyCrmJobs" "MeeyCrmLanguage" "MeeyCrmMedia" "MeeyCrmOrder" "MeeyCrmRealEstate" "MeeyCrmRealTime" "MeeyCrmRecord" "MeeyCrmSms" "MeeyCrmUser" "ServiceBusPersistence")
 
 # Thực hiện dump cho từng database trong danh sách
 for database_name in "${databases[@]}"
@@ -402,7 +224,6 @@ else
     echo "Lỗi khi nén folder backup."
 fi
 
-#### FTP upload #########################################################
 FTP_SITE=10.100.10.119
 FTP_USER=meeybackup
 FTP_PASS=PyvDNaV0iTwTAO3VyUM0
@@ -423,6 +244,13 @@ close
 bye
 EOF
 
-PGPASSWORD="ehx%vAP6ljS06ec5" pg_dumpall -h localhost -p 5432 -U postgres -f POSTGRES_ALL_10.100.10.75_20240510/all_databases.dump
+### script_delete
+#!/bin/bash
 
-0 2 * * * /root/backup/script_backup.sh
+# Xóa các thư mục có định dạng POSTGRES_ALL_10.100.10.147_*
+for folder in POSTGRES_ALL_*; do
+#    if [ -d "$folder" ]; then
+        rm -rf "$folder"
+        echo "Đã xóa thư mục $folder."
+#    fi
+done

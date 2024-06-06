@@ -2,49 +2,6 @@ Link về Redis Sentinal: https://viblo.asia/p/redis-sentinel-la-cai-gi-m68Z0eaM
 Link cài đặt master slave sentinel: https://docs.vultr.com/setup-high-availability-redis-using-sentinel-in-ubuntu
 dump elasticache: https://repost.aws/knowledge-center/elasticache-redis-backup-export-to-s3
 
-- master: 10.100.10.72
-- replica-1: 10.100.10.73
-- replica-2: 10.100.10.74
-
-sentinel monitor mymaster 10.100.10.72 6379 2
-sentinel auth-pass mymaster P@ssword321
-sentinel down-after-milliseconds mymaster 5000
-sentinel failover-timeout mymaster 60000
-protected-mode no
-
-công ty công nghệ thông minh
-công ty xdb
-công ty tân hồng hà
-
-P@ssword321
-
-c@lepQAtE3HwhIh%
-
-resize2fs /dev/vda1
-
-growpart /dev/vda 1
-
-requirepass "c@lepQAtE3HwhIh%"
-masterauth "c@lepQAtE3HwhIh%"
-replicaof 10.100.10.173 6379
-
-
-sentinel auth-pass mymaster c@lepQAtE3HwhIh%
-sentinel down-after-milliseconds mymaster 5000
-sentinel failover-timeout mymaster 60000
-protected-mode no
-
-NoN4a*Mn0S9QJQFJ
-
-Chuyển slave thành master:
-chạy lệnh sau: SLAVEOF NO ONE
-
-swW^fR2Cuzt3Qnrt
-
-/data1/meey3d/redis/docker-compose.yml
-/data2/redis/docker-compose.yml
-/data2/webv2-redis-test/docker-compose.yml
-
 version: '2'
 services:
   redis-meeyland-stg:
@@ -76,11 +33,58 @@ redis-fev4-meeyland : 18:32 - 18:35
 redis-apiv3-meeyland : 21:20 - 21:22
 redis-fev4-meeyland :  21:23 - 21:25
 
-https://docs.google.com/spreadsheets/d/1DD_aIL7-wpKm4TSPuJa_Po29_0wFjGX9JRFvf_iYuuo/edit#gid=1481063642
-https://docs.google.com/spreadsheets/d/1tXEFL4iW-dPdNyetMEGUnUHONW-nuLtfVsEsNs8yCC0/edit?pli=1#gid=0
-https://docs.google.com/spreadsheets/d/1t5fGWEu_sDd37Nbou6lm2g0ht7rJM8k7znUAs64m-zo/edit#gid=0
-https://docs.google.com/spreadsheets/d/110KwI6s1UerAtFdufv4fWuBpHog8LkK-g0kNKe-087w/edit#gid=37203210
+### Docker
+version: "3.9"
+services:
 
-redis-addon-provider-meeyland
-redis-fev4-meeyland
-redis-apiv3-meeyland
+  redis-6.2:
+    container_name: redis-6.2
+    image: redis:6.2-alpine
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "6354:6379"
+    volumes:
+      - "./data/:/data/"
+    restart: always
+    networks:
+      - redis-6.2  
+
+  redis-6.2-pass:
+    container_name: redis-6.2-pass
+    image: redis:6.2-alpine
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    ports:
+      - "6355:6379"
+    restart: always
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_HOST_PASSWORD"
+    environment:
+      - REDIS_HOST_PASSWORD=password
+    networks:
+      - redis-6.2
+
+networks:
+  redis-6.2:
+    driver: bridge
+    name: rrp
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.12.0/24
+          gateway: 172.16.12.254
+    attachable: true
