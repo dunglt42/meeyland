@@ -1,0 +1,3 @@
+### Command
+k config set-context --current --namespace ls05
+k run test2 --image nginx --dry-run -oyaml
