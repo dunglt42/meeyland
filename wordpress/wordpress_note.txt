@@ -1,0 +1,20 @@
+https://github.com/mjstealey/wordpress-nginx-docker
+
+https://vpn-dev.meey.dev/
+openvpn
+RsXPfjPTTwsx
+
+10.100.11.39
+dungle / 123456a@
+
+https://nhadathanoiland.meey.dev/
+user: admin
+pass: qL4hVXt7cDpDovGMfY7l
+
+docker buildx build --push --platform=linux/arm64/v8,linux/amd64 --tag h2372/debugger .
+
+
+--platform trong lúc build để cái architecture cần vô là dc
+docker build --platform=linux/amd64  -t test:latest .
+Hy vọng giúp dc bạn
+
