@@ -1,1 +1,6 @@
 https://www.youtube.com/watch?v=nW_91AiC1cI
+
+sudo certbot certonly --standalone -d registry.dunglt.fun --preferred-challenges http --agree-tos -m dunglt.bkhn@gmail.com --keep-until-expiring
+
+/etc/letsencrypt/live/registry.dunglt.fun/fullchain.pem
+/etc/letsencrypt/live/registry.dunglt.fun/privkey.pem
